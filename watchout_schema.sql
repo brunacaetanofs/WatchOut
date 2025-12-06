@@ -1,11 +1,11 @@
--- Start fresh: drop and recreate the database
+-- =========================================
+-- SCHEMA: WatchOut database
+-- =========================================
 DROP DATABASE IF EXISTS watchout;
 CREATE DATABASE watchout;
 USE watchout;
 
--- =========================
--- TABLE 1: Customer
--- =========================
+-- 1) Customer
 CREATE TABLE Customer (
     customer_id     INT AUTO_INCREMENT PRIMARY KEY,
     first_name      VARCHAR(50) NOT NULL,
@@ -15,17 +15,13 @@ CREATE TABLE Customer (
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABLE 2: Brand
--- =========================
+-- 2) Brand
 CREATE TABLE Brand (
     brand_id    INT AUTO_INCREMENT PRIMARY KEY,
     brand_name  VARCHAR(100) NOT NULL
 );
 
--- =========================
--- TABLE 3: Product
--- =========================
+-- 3) Product
 CREATE TABLE Product (
     product_id      INT AUTO_INCREMENT PRIMARY KEY,
     brand_id        INT NOT NULL,
@@ -40,9 +36,7 @@ CREATE TABLE Product (
         ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
--- =========================
--- TABLE 4: StockUnit
--- =========================
+-- 4) StockUnit
 CREATE TABLE StockUnit (
     stock_unit_id   INT AUTO_INCREMENT PRIMARY KEY,
     product_id      INT NOT NULL,
@@ -55,9 +49,7 @@ CREATE TABLE StockUnit (
         ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
--- =========================
--- TABLE 5: Employee
--- =========================
+-- 5) Employee
 CREATE TABLE Employee (
     employee_id     INT AUTO_INCREMENT PRIMARY KEY,
     first_name      VARCHAR(50) NOT NULL,
@@ -66,13 +58,11 @@ CREATE TABLE Employee (
     hire_date       DATE
 );
 
--- =========================
--- TABLE 6: OrderHeader
--- =========================
+-- 6) OrderHeader
 CREATE TABLE OrderHeader (
     order_id        INT AUTO_INCREMENT PRIMARY KEY,
     customer_id     INT NOT NULL,
-    employee_id     INT NULL,         -- who processed the order
+    employee_id     INT NULL,
     order_date      DATE NOT NULL,
     total_amount    DECIMAL(12,2),
 
@@ -85,9 +75,7 @@ CREATE TABLE OrderHeader (
         ON UPDATE CASCADE ON DELETE SET NULL
 );
 
--- =========================
--- TABLE 7: OrderItem
--- =========================
+-- 7) OrderItem
 CREATE TABLE OrderItem (
     order_item_id   INT AUTO_INCREMENT PRIMARY KEY,
     order_id        INT NOT NULL,
@@ -109,9 +97,7 @@ CREATE TABLE OrderItem (
         ON UPDATE CASCADE ON DELETE SET NULL
 );
 
--- =========================
--- TABLE 8: Review
--- =========================
+-- 8) Review
 CREATE TABLE Review (
     review_id       INT AUTO_INCREMENT PRIMARY KEY,
     customer_id     INT NOT NULL,
@@ -129,9 +115,7 @@ CREATE TABLE Review (
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- =========================
--- TABLE 9: LogPrice (log table for triggers)
--- =========================
+-- 9) LogPrice (for triggers)
 CREATE TABLE LogPrice (
     log_id      INT AUTO_INCREMENT PRIMARY KEY,
     operation   VARCHAR(50),
@@ -140,9 +124,7 @@ CREATE TABLE LogPrice (
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- TABLE 10: SalaryHistory
--- =========================
+-- 10) SalaryHistory
 CREATE TABLE SalaryHistory (
     salary_id       INT AUTO_INCREMENT PRIMARY KEY,
     employee_id     INT NOT NULL,
