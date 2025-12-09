@@ -12,6 +12,7 @@ CREATE TABLE Customer (
     last_name       VARCHAR(50) NOT NULL,
     email           VARCHAR(120) UNIQUE NOT NULL,
     phone           VARCHAR(20),
+    loyalty_tier    ENUM('Standard', 'Gold', 'Platinum') DEFAULT 'Standard',
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
