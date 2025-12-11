@@ -13,21 +13,17 @@ SELECT
     c.loyalty_tier AS 'Tier',
     IFNULL(CONCAT(e.first_name, ' ', e.last_name), 'Online/Kiosk') AS 'Salesperson',
     
-    -- 1. CATALOG PRICE
+    -- 1. CATALOG PRICE (Sum of original unit prices)
     SUM(oi.quantity * oi.unit_price) AS 'Total_Catalog_Price',
 
-    -- 2. EFFECTIVE DISCOUNT RATE
-    CONCAT(ROUND(
-        (1 - (SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0)) / SUM(oi.quantity * oi.unit_price))) * 100
-    , 2), '%') AS 'Avg_Discount_Rate',
-
-    -- 3. FINAL PRICE (Rounded to 2 decimals)
+    -- 2. FINAL PRICE (Rounded to 2 decimals)
     ROUND(
         SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0)), 
         2
     ) AS 'Total_Paid',
 
-    -- 4. SAVINGS (Rounded to 2 decimals)
+    -- 3. SAVINGS (Money saved)
+    -- This is the most important metric now
     ROUND(
         (SUM(oi.quantity * oi.unit_price) - SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0))), 
         2
@@ -50,6 +46,8 @@ SELECT
     
     -- Price Info
     oi.unit_price AS 'Original_Price',
+    
+    -- Here we KEEP the percentage because it refers to the specific item
     CONCAT(oi.discount_percent, '%') AS 'Discount',
     
     -- Final Price per unit (Rounded)
