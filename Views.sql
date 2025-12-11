@@ -12,22 +12,30 @@ SELECT
     CONCAT(c.first_name, ' ', c.last_name) AS 'Customer',
     c.loyalty_tier AS 'Tier',
     IFNULL(CONCAT(e.first_name, ' ', e.last_name), 'Online/Kiosk') AS 'Salesperson',
-    
-    -- 1. CATALOG PRICE (Sum of original unit prices)
-    SUM(oi.quantity * oi.unit_price) AS 'Total_Catalog_Price',
 
-    -- 2. FINAL PRICE (Rounded to 2 decimals)
-    ROUND(
-        SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0)), 
-        2
-    ) AS 'Total_Paid',
-
-    -- 3. SAVINGS (Money saved)
-    -- This is the most important metric now
+    -- 1. TOTAL SAVED (Discounts)
+    -- Money that stayed in the customer's pocket
     ROUND(
         (SUM(oi.quantity * oi.unit_price) - SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0))), 
         2
-    ) AS 'Total_Saved'
+    ) AS 'Total_Saved',
+
+    -- 2. TAX BASE (Value without VAT)
+    -- Formula: Total Paid / 1.23
+    ROUND(
+        oh.total_amount / 1.23, 
+        2
+    ) AS 'Subtotal_no_IVA',
+
+    -- 3. VAT AMOUNT (The tax itself)
+    -- Formula: Total Paid - Tax Base
+    ROUND(
+        oh.total_amount - (oh.total_amount / 1.23), 
+        2
+    ) AS 'IVA_23',
+
+    -- 4. TOTAL PAID (Final value with VAT included)
+    oh.total_amount AS 'Total_Paid'
 
 FROM OrderHeader oh
 JOIN Customer c ON oh.customer_id = c.customer_id
