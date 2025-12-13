@@ -70,13 +70,22 @@ order by Total_stock_value desc;
 -- CEO Question: "Which products have less than 5 units left and need urgent restocking?"
 -- Business Context: Prevents stockouts and lost sales opportunities.
 
-select 
+SELECT 
+    -- 1. NEW WARNING COLUMN (Visual Alert)
+    CASE 
+        WHEN count(case when s.status = 'IN_STOCK' then 1 end) = 0 THEN '❌ SOLD OUT'
+        ELSE '🔴 LOW STOCK' 
+    END AS Alert_Status,
+
+    -- 2. Standard Columns
     p.model_name as Watch_name,
     b.brand_name as Brand,
     count(case when s.status = 'IN_STOCK' then 1 end) as Current_stock
-from Product p
-left join StockUnit s on p.product_id = s.product_id
-join Brand b on p.brand_id = b.brand_id
-group by Watch_name, Brand
-having Current_stock < 5
-order by Current_stock desc;
+
+FROM Product p
+LEFT JOIN StockUnit s on p.product_id = s.product_id
+JOIN Brand b on p.brand_id = b.brand_id
+
+GROUP BY Watch_name, Brand
+HAVING Current_stock < 5
+ORDER BY Current_stock ASC;

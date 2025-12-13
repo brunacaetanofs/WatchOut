@@ -37,7 +37,7 @@ BEGIN
         FROM StockUnit
         WHERE product_id = NEW.product_id AND status = 'IN_STOCK';
 
-        IF remaining_stock < 3 THEN
+        IF remaining_stock < 4 THEN
             SELECT model_name INTO product_model FROM Product WHERE product_id = NEW.product_id;
             INSERT INTO LogPrice (operation, table_name, message)
             VALUES ('WARNING', 'StockUnit', CONCAT('Low Stock Alert! Only ', remaining_stock, ' units left for ', product_model));
