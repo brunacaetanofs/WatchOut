@@ -53,10 +53,15 @@ SELECT
     b.brand_name AS 'Brand',
     p.model_name AS 'Model',
     
+    -- New Product Details
+    p.description AS 'Description',
+    p.movement_type AS 'Movement',
+    p.gender AS 'Gender',
+    
     -- Price Info
     oi.unit_price AS 'Original_Price',
     
-    -- Here we KEEP the percentage because it refers to the specific item
+    -- Discount Info
     CONCAT(oi.discount_percent, '%') AS 'Discount',
     
     -- Final Price per unit (Rounded)
