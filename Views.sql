@@ -8,27 +8,28 @@ SELECT
     oh.order_id AS 'Invoice_ID',
     oh.order_date AS 'Date',
     
-    -- Customer & Employee
+    -- Customer Info (Adicionei aqui o email e o telemóvel)
     CONCAT(c.first_name, ' ', c.last_name) AS 'Customer',
+    c.email AS 'Customer_Email',
+    c.phone AS 'Customer_Phone',
     c.loyalty_tier AS 'Tier',
+
+    -- Salesperson Info
     IFNULL(CONCAT(e.first_name, ' ', e.last_name), 'Online/Kiosk') AS 'Salesperson',
 
     -- 1. TOTAL SAVED (Discounts)
-    -- Money that stayed in the customer's pocket
     ROUND(
         (SUM(oi.quantity * oi.unit_price) - SUM(oi.quantity * oi.unit_price * (1 - oi.discount_percent / 100.0))), 
         2
     ) AS 'Total_Saved',
 
     -- 2. TAX BASE (Value without VAT)
-    -- Formula: Total Paid / 1.23
     ROUND(
         oh.total_amount / 1.23, 
         2
     ) AS 'Subtotal_no_IVA',
 
     -- 3. VAT AMOUNT (The tax itself)
-    -- Formula: Total Paid - Tax Base
     ROUND(
         oh.total_amount - (oh.total_amount / 1.23), 
         2
